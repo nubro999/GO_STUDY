@@ -1,0 +1,14 @@
+# Go workspace ignore
+# pkg/ contains the Go module cache (GOPATH/pkg/mod) — never commit
+pkg/
+# bin/ contains installed Go binaries
+bin/
+
+# Build artifacts
+*.exe
+*.test
+*.out
+
+# IDE
+.idea/
+.vscode/
