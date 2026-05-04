@@ -20,7 +20,15 @@ import "fmt"
 
 func GroupByFirst(words []string) map[byte][]string {
 	// TODO: 구현하세요.
-	return nil
+	out := make(map[byte][]string)
+	for _, w := range words {
+		if w == "" {
+			continue
+		}
+		k := w[0]
+		out[k] = append(out[k], w)
+	}
+	return out
 }
 
 func main() {
