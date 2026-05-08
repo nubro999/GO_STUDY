@@ -22,7 +22,22 @@ import "fmt"
 
 func LongestUnique(s string) int {
 	// TODO: 구현하세요.
-	return 0
+	lastSeen := make(map[byte]int) // lastSeen[char] = index
+
+	left := 0
+	best := 0
+	for i := 0; i < len(s); i++ {
+		c := s[i]
+		if idx, ok := lastSeen[c]; ok && idx >= left {
+			left = idx + 1
+		}
+		lastSeen[c] = i
+		if i-left+1 > best {
+			best = i - left + 1
+		}
+	}
+		
+	return best
 }
 
 func main() {

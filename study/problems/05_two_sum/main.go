@@ -6,25 +6,36 @@
 //   - 다중 반환값
 //
 // [문제]
-//   정수 슬라이스 nums와 정수 target이 주어진다.
-//   합이 target이 되는 두 인덱스 (i, j)를 반환하시오. (i < j)
-//   답이 존재하지 않으면 (-1, -1) 반환.
-//   각 입력에는 정답이 최대 1개라고 가정.
+//
+//	정수 슬라이스 nums와 정수 target이 주어진다.
+//	합이 target이 되는 두 인덱스 (i, j)를 반환하시오. (i < j)
+//	답이 존재하지 않으면 (-1, -1) 반환.
+//	각 입력에는 정답이 최대 1개라고 가정.
 //
 // [예시]
-//   TwoSum([2,7,11,15], 9)  -> (0, 1)   // 2 + 7 = 9
-//   TwoSum([3,2,4], 6)      -> (1, 2)   // 2 + 4 = 6
-//   TwoSum([3,3], 6)        -> (0, 1)
-//   TwoSum([1,2,3], 100)    -> (-1, -1)
+//
+//	TwoSum([2,7,11,15], 9)  -> (0, 1)   // 2 + 7 = 9
+//	TwoSum([3,2,4], 6)      -> (1, 2)   // 2 + 4 = 6
+//	TwoSum([3,3], 6)        -> (0, 1)
+//	TwoSum([1,2,3], 100)    -> (-1, -1)
 //
 // [힌트]
-//   nums[i]를 순회하며 (target - nums[i]) 가 이전에 본 값인지 map에서 확인.
+//
+//	nums[i]를 순회하며 (target - nums[i]) 가 이전에 본 값인지 map에서 확인.
 package main
 
 import "fmt"
 
 func TwoSum(nums []int, target int) (int, int) {
 	// TODO: 구현하세요.
+	seen := make(map[int]int) // seen[num] = index
+	for i, num := range nums {
+		complement := target - num
+		if j, found := seen[complement]; found { // complement이 이전에 본 값인지 확인
+			return j, i
+		}
+		seen[num] = i
+	}
 	return -1, -1
 }
 
