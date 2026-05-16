@@ -36,27 +36,63 @@ type Storage interface {
 }
 
 // TODO: MemoryStorage, NullStorage 정의 및 메서드 구현
+type MemoryStorage struct {
+	data map[string]string
+}
+
+func (m *MemoryStorage) Save(key, value string) error {
+	if m.data == nil {
+		m.data = make(map[string]string)
+	}
+	m.data[key] = value
+	return nil
+}
+
+func (m *MemoryStorage) Load(key string) (string, error) {
+	if m.data == nil {
+		return "", ErrNotFound
+	}
+	v, ok := m.data[key]
+	if !ok {
+		return "", ErrNotFound
+	}
+	return v, nil
+}
+
+type NullStorage struct{}
+
+func (n *NullStorage) Save(key, value string) error {	// 아무것도 저장하지 않음
+	return nil
+}
+
+func (n *NullStorage) Load(key string) (string, error) {	// 항상 ErrNotFound 반환
+	return "", ErrNotFound
+}
 
 func SaveAll(s Storage, items map[string]string) error {
 	// TODO: 구현하세요.
+	for k, v := range items {
+		if err := s.Save(k, v); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
 func main() {
 	// 아래 주석을 해제하고 Storage 구현체를 작성한 뒤 실행하세요.
-	//
-	// mem := &MemoryStorage{}
-	// _ = SaveAll(mem, map[string]string{"a": "1", "b": "2"})
-	// v, err := mem.Load("a")
-	// fmt.Printf("MemoryStorage Load(a) = %q, err=%v  | pass=%v\n", v, err, v == "1" && err == nil)
-	//
-	// _, err = mem.Load("missing")
-	// fmt.Printf("MemoryStorage Load(missing) err=%v  | pass=%v\n", err, errors.Is(err, ErrNotFound))
-	//
-	// null := &NullStorage{}
-	// _ = null.Save("x", "y")  // OK, 무시
-	// _, err = null.Load("x")
-	// fmt.Printf("NullStorage Load = err=%v  | pass=%v\n", err, errors.Is(err, ErrNotFound))
+	
+	mem := &MemoryStorage{}
+	_ = SaveAll(mem, map[string]string{"a": "1", "b": "2"})
+	v, err := mem.Load("a")
+	fmt.Printf("MemoryStorage Load(a) = %q, err=%v  | pass=%v\n", v, err, v == "1" && err == nil)
+	
+	_, err = mem.Load("missing")
+	fmt.Printf("MemoryStorage Load(missing) err=%v  | pass=%v\n", err, errors.Is(err, ErrNotFound))
+	
+	null := &NullStorage{}
+	_ = null.Save("x", "y")  // OK, 무시
+	_, err = null.Load("x")
+	fmt.Printf("NullStorage Load = err=%v  | pass=%v\n", err, errors.Is(err, ErrNotFound))
 
-	fmt.Println("Storage 구현체를 작성한 뒤 main()의 주석을 해제하세요.")
 }

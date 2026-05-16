@@ -31,26 +31,67 @@ type Animal interface {
 }
 
 // TODO: Dog, Cat, Cow 정의 및 메서드 구현
+type Dog struct {
+	Nickname string
+}
+
+type Cat struct {
+	Nickname string
+}
+
+type Cow struct {
+	Nickname string
+}
+
+func (d Dog) Sound() string {
+	return "Woof"
+}
+
+func (d Dog) Name() string {
+	return d.Nickname
+}
+
+func (c Cat) Sound() string {
+	return "Meow"
+}
+
+func (c Cat) Name() string {
+	return c.Nickname
+}
+
+func (c Cow) Sound() string {
+	return "Moo"
+}
+
+func (c Cow) Name() string {
+	return c.Nickname
+}
+
 
 func Chorus(animals []Animal) []string {
 	// TODO: 구현하세요.
-	return nil
+	var result []string
+	for _, a := range animals {
+		result = append(result, fmt.Sprintf("%s: %s", a.Name(), a.Sound()))
+	}
+
+	return result
 }
 
 func main() {
-	// 아래 주석을 해제하고 Dog/Cat/Cow를 구현한 뒤 실행하세요.
-	//
-	// got := Chorus([]Animal{
-	// 	Dog{Nickname: "Rex"},
-	// 	Cat{Nickname: "Whiskers"},
-	// 	Cow{Nickname: "Bessie"},
-	// })
-	// want := []string{"Rex: Woof", "Whiskers: Meow", "Bessie: Moo"}
-	// pass := len(got) == len(want)
-	// for i := range got {
-	// 	if got[i] != want[i] { pass = false }
-	// }
-	// fmt.Printf("Chorus = %v  | pass=%v\n", got, pass)
+	//아래 주석을 해제하고 Dog/Cat/Cow를 구현한 뒤 실행하세요.
+	
+	got := Chorus([]Animal{
+		Dog{Nickname: "Rex"},
+		Cat{Nickname: "Whiskers"},
+		Cow{Nickname: "Bessie"},
+	})
+	want := []string{"Rex: Woof", "Whiskers: Meow", "Bessie: Moo"}
+	pass := len(got) == len(want)
+	for i := range got {
+		if got[i] != want[i] { pass = false }
+	}
+	fmt.Printf("Chorus = %v  | pass=%v\n", got, pass)
 
 	fmt.Println("Dog/Cat/Cow를 구현한 뒤 main()의 주석을 해제하세요.")
 }
