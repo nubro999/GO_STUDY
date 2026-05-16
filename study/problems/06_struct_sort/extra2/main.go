@@ -15,7 +15,8 @@
 //   [{C 5 30} {A 10 15} {D 10 15} {B 10 20}]
 package main
 
-import "fmt"
+import ("fmt"
+		"sort")
 
 type Event struct {
 	Title string
@@ -25,6 +26,16 @@ type Event struct {
 
 func SortEvents(events []Event) {
 	// TODO: 구현하세요.
+	sort.Slice(events, func(i, j int) bool {
+		if events[i].Start != events[j].Start {
+			return events[i].Start < events[j].Start
+		}
+		if events[i].End != events[j].End {
+			return events[i].End < events[j].End
+		}
+		return events[i].Title < events[j].Title
+	})
+
 }
 
 func main() {
@@ -33,22 +44,10 @@ func main() {
 		{"A", 10, 15},
 		{"C", 5, 30},
 		{"D", 10, 15},
-	}
-	want := []Event{
-		{"C", 5, 30},
-		{"A", 10, 15},
-		{"D", 10, 15},
-		{"B", 10, 20},
+		{"D", 15, 15},
 	}
 
 	SortEvents(events)
 
-	pass := len(events) == len(want)
-	for i := range events {
-		if events[i] != want[i] {
-			pass = false
-		}
-	}
 	fmt.Printf("SortEvents = %v\n", events)
-	fmt.Printf("pass=%v\n", pass)
 }

@@ -16,7 +16,10 @@
 //   출력: [{Alice 25} {Charlie 25} {Bob 30}]
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"sort"
+)
 
 type User struct {
 	Name string
@@ -26,6 +29,12 @@ type User struct {
 func SortUsers(users []User) {
 	// TODO: 구현하세요.
 	// 힌트: sort.Slice(users, func(i, j int) bool { ... })
+	sort.Slice(users, func(i, j int) bool {
+		if users[i].Age != users[j].Age {
+			return users[i].Age < users[j].Age
+		}
+		return users[i].Name < users[j].Name
+	})
 }
 
 func main() {
