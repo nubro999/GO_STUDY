@@ -14,7 +14,8 @@
 //   출력: [{Alice 90} {Carol 90} {Bob 80} {Dan 80}]
 package main
 
-import "fmt"
+import ("fmt"
+		"sort")
 
 type Student struct {
 	Name  string
@@ -22,7 +23,15 @@ type Student struct {
 }
 
 func RankStudents(students []Student) {
+	sort.Slice(students, func(i, j int) bool {
+		if students[i].Score != students[j].Score {
+			return students[i].Score > students[j].Score
+		}
+		return students[i].Name < students[j].Name
+	})
 	// TODO: 구현하세요.
+	
+
 }
 
 func main() {
