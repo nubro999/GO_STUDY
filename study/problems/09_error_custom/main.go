@@ -30,14 +30,33 @@ import (
 
 // TODO: DivisionByZeroError 타입과 Error() 메서드 정의
 
+type DivisionByZeroError struct {
+	Numerator int
+}
+
+func (e *DivisionByZeroError) Error() string {
+	return fmt.Sprintf("cannot divide %d by zero", e.Numerator)
+}
+
 func SafeDivide(a, b int) (int, error) {
 	// TODO: 구현하세요.
-	return 0, nil
+	if b == 0 {
+		return 0, &DivisionByZeroError{Numerator: a}
+	}
+	return a / b, nil
 }
 
 func ComputeAverage(nums []int, divisor int) (int, error) {
 	// TODO: 구현하세요. (합산 후 SafeDivide 호출, 에러 래핑)
-	return 0, nil
+	sum := 0
+	for _, n := range nums {
+		sum += n
+	}
+	result, err := SafeDivide(sum, divisor)
+	if err != nil {
+		return 0, fmt.Errorf("compute average failed: %w", err)
+	}
+	return result, nil
 }
 
 func main() {
@@ -50,12 +69,12 @@ func main() {
 	_, err := ComputeAverage([]int{1, 2, 3, 4}, 0)
 	fmt.Printf("ComputeAverage error: %v\n", err)
 
-	// var dze *DivisionByZeroError
-	// if errors.As(err, &dze) {
-	//     fmt.Printf("  -> 분자값 추출 성공: %d  | pass=%v\n", dze.Numerator, dze.Numerator == 10)
-	// } else {
-	//     fmt.Println("  -> errors.As 실패: 타입을 추출하지 못함")
-	// }
+	var dze *DivisionByZeroError
+	if errors.As(err, &dze) {
+	    fmt.Printf("  -> 분자값 추출 성공: %d  | pass=%v\n", dze.Numerator, dze.Numerator == 10)
+	} else {
+	    fmt.Println("  -> errors.As 실패: 타입을 추출하지 못함")
+	}
 	// 위 주석을 해제하고 DivisionByZeroError 를 정의한 뒤 실행하세요.
 	_ = errors.As
 }

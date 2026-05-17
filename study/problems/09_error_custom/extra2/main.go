@@ -30,6 +30,15 @@ import (
 
 func ChainDepth(err error) int {
 	// TODO: 구현하세요.
+	if err == nil {
+		return 0
+	}
+	depth := 0
+	for err != nil {
+		depth++
+		err = errors.Unwrap(err)
+	}
+	return depth
 	return 0
 }
 

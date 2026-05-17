@@ -31,31 +31,58 @@ import (
 )
 
 // TODO: NotFoundError, ValidationError 정의
+type NotFoundError struct {
+	Resource string
+}
+
+func (e *NotFoundError) Error() string {
+	return fmt.Sprintf("%s not found", e.Resource)
+}
+
+type ValidationError struct {
+	Field  string
+	Reason string
+}
+
+func (e *ValidationError) Error() string {
+	return fmt.Sprintf("validation failed for %s: %s", e.Field, e.Reason)
+}
 
 func Classify(err error) string {
 	// TODO: 구현하세요. errors.As 활용.
+	if err == nil {
+		return "none"
+	}
+	var nfe *NotFoundError
+	if errors.As(err, &nfe) {
+		return "not_found"
+	}
+	var ve *ValidationError
+	if errors.As(err, &ve) {
+		return "validation"
+	}
+	return "unknown"
 	_ = errors.As
 	return ""
 }
 
 func main() {
-	// 아래 주석을 해제하고 에러 타입을 구현한 뒤 실행하세요.
-	//
-	// tests := []struct {
-	// 	err  error
-	// 	want string
-	// }{
-	// 	{nil, "none"},
-	// 	{&NotFoundError{Resource: "user"}, "not_found"},
-	// 	{&ValidationError{Field: "email", Reason: "invalid"}, "validation"},
-	// 	{fmt.Errorf("query failed: %w", &NotFoundError{Resource: "post"}), "not_found"},
-	// 	{fmt.Errorf("submit: %w", &ValidationError{Field: "age", Reason: "negative"}), "validation"},
-	// 	{errors.New("misc"), "unknown"},
-	// }
-	// for _, tc := range tests {
-	// 	got := Classify(tc.err)
-	// 	fmt.Printf("Classify(%v) = %q  | pass=%v\n", tc.err, got, got == tc.want)
-	// }
+	
+	tests := []struct {
+		err  error
+		want string
+	}{
+		{nil, "none"},
+		{&NotFoundError{Resource: "user"}, "not_found"},
+		{&ValidationError{Field: "email", Reason: "invalid"}, "validation"},
+		{fmt.Errorf("query failed: %w", &NotFoundError{Resource: "post"}), "not_found"},
+		{fmt.Errorf("submit: %w", &ValidationError{Field: "age", Reason: "negative"}), "validation"},
+		{errors.New("misc"), "unknown"},
+	}
+	for _, tc := range tests {
+		got := Classify(tc.err)
+		fmt.Printf("Classify(%v) = %q  | pass=%v\n", tc.err, got, got == tc.want)
+	}
 
 	fmt.Println("에러 타입을 구현한 뒤 main()의 주석을 해제하세요.")
 }

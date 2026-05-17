@@ -31,6 +31,8 @@ import (
 func ParallelSum(nums []int, workers int) int {
 	// TODO: 구현하세요.
 	_ = sync.WaitGroup{}
+	go func() {
+	}()
 	return 0
 }
 
@@ -49,8 +51,8 @@ func main() {
 		{nums, 4, 5050},
 		{nums, 7, 5050}, // 100 % 7 != 0 인 케이스
 		{nums, 1, 5050},
-		{[]int{}, 4, 0},
-		{[]int{42}, 10, 42},
+		{[]int{}, 4, 0}, // 빈 슬라이스
+		{[]int{42}, 10, 42}, // []int{42}는 workers보다 작은 케이스, 값은 42
 	}
 
 	for _, tc := range tests {
