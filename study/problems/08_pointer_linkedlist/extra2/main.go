@@ -32,6 +32,13 @@ type Node struct {
 
 func Middle(head *Node) *Node {
 	// TODO: 구현하세요.
+	var slow, fast *Node = head, head
+	for fast != nil && fast.Next != nil {
+		slow = slow.Next
+		fast = fast.Next.Next
+	}
+	return slow
+
 	return nil
 }
 

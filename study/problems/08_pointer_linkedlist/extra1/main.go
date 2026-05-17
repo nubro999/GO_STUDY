@@ -29,7 +29,25 @@ type Node struct {
 
 func MergeSorted(a, b *Node) *Node {
 	// TODO: 구현하세요.
-	return nil
+	dummy := &Node{}
+	tail := dummy
+	for a != nil && b != nil {
+		if a.Val < b.Val {
+			tail.Next = a
+			a = a.Next
+		} else {
+			tail.Next = b
+			b = b.Next
+		}
+		tail = tail.Next
+	}
+	if a != nil {
+		tail.Next = a
+	} else {
+		tail.Next = b
+	}
+	// dummy.Next가 병합된 리스트의 head가 됨.
+	return dummy.Next
 }
 
 func fromSlice(vals []int) *Node {

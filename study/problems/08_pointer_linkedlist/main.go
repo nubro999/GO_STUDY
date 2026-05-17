@@ -36,12 +36,22 @@ type Node struct {
 
 func Reverse(head *Node) *Node {
 	// TODO: 구현하세요.
-	return nil
+	var prev *Node
+	curr := head
+	for curr != nil {
+		next := curr.Next
+		curr.Next = prev
+		prev = curr
+		curr = next
+	}
+	return prev
 }
+	
+
 
 func fromSlice(vals []int) *Node {
 	var head *Node
-	for i := len(vals) - 1; i >= 0; i-- {
+	for i := len(vals) - 1; i >= 0; i -- {
 		head = &Node{Val: vals[i], Next: head}
 	}
 	return head
