@@ -19,9 +19,54 @@ import (
 )
 
 func ParallelMax(nums []int, workers int) int {
-	// TODO: 구현하세요.
-	_ = sync.WaitGroup{}
-	return 0
+	len := len(nums)
+	if workers <= 0 {
+		workers = 1
+	}
+	if len < workers {
+		workers = len
+	}
+	if len == 0 {
+		return 0
+	}
+	
+	chunksize := (len + workers - 1) / workers
+	partials := make([]int, workers)
+	
+	var wg sync.WaitGroup
+	for i := 0; i < workers; i++ {
+		start := i * chunksize
+		end := start + chunksize
+		if end > len {
+			end = len
+		}
+
+		wg.Add(1)
+
+		go func(i, start, end int) {
+			defer wg.Done()
+			max := nums[start] // 청크의 첫 원소로 초기화
+			for j := start + 1; j < end; j++ {
+				if nums[j] > max {
+					max = nums[j]
+				}
+			}
+			partials[i] = max
+		}(i, start, end)
+	}
+
+	wg.Wait()
+
+	// partials에서 최종 max 찾기
+	finalMax := partials[0]
+	for i := 1; i < workers; i++ {
+		if partials[i] > finalMax {
+			finalMax = partials[i]
+		}
+	}
+	
+	return finalMax
+		
 }
 
 func main() {

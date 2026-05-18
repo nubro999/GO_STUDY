@@ -26,8 +26,27 @@ import (
 
 func SafeCounter(workers, perWorker int) int {
 	// TODO: 구현하세요. sync.Mutex 사용.
-	_ = sync.Mutex{}
-	return 0
+
+	wg := sync.WaitGroup{}
+	var counter int
+	var mu sync.Mutex
+	
+	for i := 0; i < workers; i++ {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			for j := 0; j < perWorker; j++ {
+				mu.Lock()
+				counter++
+				mu.Unlock()
+			}
+		}()
+	}
+
+	wg.Wait()
+
+	
+	return counter
 }
 
 func main() {

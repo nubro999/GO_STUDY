@@ -9,9 +9,9 @@ func SafeCounter(workers, perWorker int) int {
 	counter := 0
 
 	for w := 0; w < workers; w++ {
-		wg.Add(1)
+		wg.Add(1) //
 		go func() {
-			defer wg.Done()
+			defer wg.Done() //w 하나 감소
 			for i := 0; i < perWorker; i++ {
 				mu.Lock()
 				counter++

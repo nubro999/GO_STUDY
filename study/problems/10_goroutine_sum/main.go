@@ -7,20 +7,23 @@
 //   - go run -race 로 race condition 검출
 //
 // [문제]
-//   큰 정수 슬라이스 nums와 분할 개수 workers가 주어진다.
-//   슬라이스를 workers 등분해 각 청크를 별도 고루틴이 합산하고,
-//   최종 합을 반환하시오.
 //
-//   - workers <= 0 인 경우 1로 처리
-//   - len(nums) < workers 면 workers를 len(nums)로 줄임
-//   - 빈 슬라이스는 0 반환
+//	큰 정수 슬라이스 nums와 분할 개수 workers가 주어진다.
+//	슬라이스를 workers 등분해 각 청크를 별도 고루틴이 합산하고,
+//	최종 합을 반환하시오.
+//
+//	- workers <= 0 인 경우 1로 처리
+//	- len(nums) < workers 면 workers를 len(nums)로 줄임
+//	- 빈 슬라이스는 0 반환
 //
 // [예시]
-//   ParallelSum([1..100], 4) -> 5050
+//
+//	ParallelSum([1..100], 4) -> 5050
 //
 // [힌트]
-//   각 고루틴이 chan int 로 부분합을 보내고, main에서 누적.
-//   또는 결과를 슬라이스의 i번째 원소에 쓰는 패턴(서로 다른 인덱스에만 쓰면 race 없음).
+//
+//	각 고루틴이 chan int 로 부분합을 보내고, main에서 누적.
+//	또는 결과를 슬라이스의 i번째 원소에 쓰는 패턴(서로 다른 인덱스에만 쓰면 race 없음).
 package main
 
 import (
@@ -30,10 +33,49 @@ import (
 
 func ParallelSum(nums []int, workers int) int {
 	// TODO: 구현하세요.
-	_ = sync.WaitGroup{}
-	go func() {
-	}()
-	return 0
+	n := len(nums)
+	if workers <= 0 {
+		workers = 1
+	}
+	if n < workers {
+		workers = n
+	}
+	if n == 0 {
+		return 0
+	}
+
+	chunksize := (n + workers - 1) / workers
+
+	partials := make([]int, workers)
+
+	var wg sync.WaitGroup
+
+	for i := 0; i < workers; i++ {
+		start := i * chunksize
+		end := start + chunksize
+		if end > n {
+			end = n
+		}
+
+		wg.Add(1)
+
+		go func(i, start, end int) {
+			defer wg.Done()
+			sum := 0
+			for _, num := range nums[start:end] {
+				sum += num
+			}
+			partials[i] = sum
+		}(i, start, end)
+	}
+	wg.Wait()
+
+	total := 0
+	for _, p := range partials {
+		total += p
+	}
+	return total
+
 }
 
 func main() {
@@ -51,7 +93,7 @@ func main() {
 		{nums, 4, 5050},
 		{nums, 7, 5050}, // 100 % 7 != 0 인 케이스
 		{nums, 1, 5050},
-		{[]int{}, 4, 0}, // 빈 슬라이스
+		{[]int{}, 4, 0},     // 빈 슬라이스
 		{[]int{42}, 10, 42}, // []int{42}는 workers보다 작은 케이스, 값은 42
 	}
 
